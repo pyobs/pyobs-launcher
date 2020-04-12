@@ -77,7 +77,6 @@ class ConfigRunner(QtWidgets.QWidget):
         # read lines until process terminates
         for line in self.process.stderr:
             line = line.strip()
-            print(line)
             if len(line) > 0:
                 self.add_to_log.emit(line)
 
@@ -95,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._configs = [] if configs is None else configs
 
         # set title, size, etc
-        self.setWindowTitle('PyObs launcher')
+        self.setWindowTitle('pyobs launcher')
         self.resize(800, 600)
 
         # add tabs
