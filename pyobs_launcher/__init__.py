@@ -68,11 +68,16 @@ class ConfigRunner(QtWidgets.QWidget):
         # use shell only in windows
         shell = sys.platform == 'win32'
 
+        # define command
+        if self.python is None:
+            cmd = [self.pyobs]
+        else:
+            cmd = [self.python, self.pyobs]
+        cmd += [os.path.basename(self.config)]
+
         # start process
-        self.process = subprocess.Popen(
-            [self.python, self.pyobs, os.path.basename(self.config)],
-            stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True,
-            cwd=os.path.dirname(self.config), shell=shell)
+        self.process = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True,
+                                        cwd=os.path.dirname(self.config), shell=shell)
 
         # read lines until process terminates
         for line in self.process.stderr:
@@ -85,12 +90,12 @@ class ConfigRunner(QtWidgets.QWidget):
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, python: str = None, pyobs: str = None, configs: List[str] = None, *args, **kwargs):
+    def __init__(self, pyobs: str = None, python: str = None, configs: List[str] = None, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
 
         # store
-        self._python_executable = sys.executable if python is None else python
         self._pyobs_executable = 'pyobs' if pyobs is None else pyobs
+        self._python_executable = python
         self._configs = [] if configs is None else configs
 
         # set title, size, etc
